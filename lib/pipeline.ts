@@ -14,12 +14,13 @@ export default class PipelineConstruct extends Construct {
     const teamApplication = new TeamApplication('burnham', account);
     
     const autoscalerAddOn = new blueprints.ClusterAutoScalerAddOn();
+    const kebeviousAddOn = new blueprints.KubeviousAddOn();
     
     const blueprint = blueprints.EksBlueprint
                       .builder()
                       .account(account)
                       .region(region)
-                      .addOns(autoscalerAddOn)
+                      .addOns(autoscalerAddOn, kebeviousAddOn)
                       .teams(teamPlatform, teamApplication);
                       
     const pipeline = blueprints.CodePipelineStack.builder()
