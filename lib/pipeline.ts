@@ -1,20 +1,24 @@
 import * as cdk from 'aws-cdk-lib';
 import * as blueprints from '@aws-quickstart/eks-blueprints'
 import { Construct } from 'constructs';
+import { TeamPlatform, TeamApplication} from '../teams/index';
 
 export default class PipelineConstruct extends Construct {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id);
     
-    const account = props?.env?.account;
-    const region = props?.env?.region;
+    const account = props?.env?.account!;
+    const region = props?.env?.region!;
+    
+    const teamPlatform = new TeamPlatform(account);
+    const teamApplication = new TeamApplication('burnham', account);
     
     const blueprint = blueprints.EksBlueprint
                       .builder()
                       .account(account)
                       .region(region)
                       .addOns()
-                      .teams();
+                      .teams(teamPlatform, teamApplication);
                       
     const pipeline = blueprints.CodePipelineStack.builder()
                         .name("eks-blueprints-workshop-pipeline")
